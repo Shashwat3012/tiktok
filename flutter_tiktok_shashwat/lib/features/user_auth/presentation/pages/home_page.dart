@@ -1,11 +1,124 @@
-// import 'dart:ffi';
+// import 'package:flutter/material.dart';
+// import 'package:video_player/video_player.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// class HomePage extends StatefulWidget {
+//   const HomePage({super.key});
+
+//   @override
+//   State<HomePage> createState() => _HomePageState();
+// }
+
+// class _HomePageState extends State<HomePage> {
+//   late VideoPlayerController controller;
+
+//   @override
+//   void initState() {
+//     loadVideoPlayer();
+//     super.initState();
+//   }
+
+//   loadVideoPlayer() {
+//     controller = VideoPlayerController.asset('assets/videos/butterfly.mp4');
+//     controller.addListener(() {
+//       setState(() {});
+//     });
+//     controller.initialize().then((value) {
+//       setState(() {});
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.black,
+//       body: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           // Likes, Comments, and Creator Text
+//           Padding(
+//             padding:
+//                 const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   'Likes 100k • Comments 10k',
+//                   style: TextStyle(color: Colors.white),
+//                 ),
+//                 SizedBox(height: 4),
+//                 Text(
+//                   'Creator Name',
+//                   style: TextStyle(color: Colors.white),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           // Video Player
+//           Expanded(
+//             child: Stack(
+//               alignment: Alignment.center,
+//               children: [
+//                 if (controller.value.isInitialized)
+//                   AspectRatio(
+//                     aspectRatio: controller.value.aspectRatio,
+//                     child: VideoPlayer(controller),
+//                   ),
+//                 if (!controller.value.isInitialized)
+//                   CircularProgressIndicator(),
+//                 GestureDetector(
+//                   onTap: () {
+//                     if (controller.value.isPlaying) {
+//                       controller.pause();
+//                     } else {
+//                       controller.play();
+//                     }
+//                     setState(() {});
+//                   },
+//                 ),
+//               ],
+//             ),
+//           ),
+//           // Controls
+//           Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 IconButton(
+//                   onPressed: () {
+//                     if (controller.value.isPlaying) {
+//                       controller.pause();
+//                     } else {
+//                       controller.play();
+//                     }
+//                     setState(() {});
+//                   },
+//                   icon: Icon(
+//                     controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+//                     color: Colors.white,
+//                   ),
+//                 ),
+//                 IconButton(
+//                   onPressed: () {
+//                     controller.seekTo(Duration(seconds: 0));
+//                     setState(() {});
+//                   },
+//                   icon: Icon(
+//                     Icons.stop,
+//                     color: Colors.white,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-
-import '../../../../global/common/toast.dart';
+import 'package:video_player/video_player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,179 +128,108 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late VideoPlayerController controller;
+  bool isLiked = false;
+  bool isDisliked = false;
+  bool isCommentOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadVideoPlayer();
+  }
+
+  loadVideoPlayer() async {
+    controller = VideoPlayerController.asset('assets/videos/butterfly.mp4');
+    await controller.initialize();
+    controller.addListener(() {
+      setState(() {});
+    });
+    controller.play(); // Start playing the video automatically
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    controller.removeListener(() {});
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text("HomePage"),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  _createData(UserModel(
-                    username: "Henry",
-                    age: 21,
-                    adress: "London",
-                  ));
-                },
-                child: Container(
-                  height: 45,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text(
-                      "Create Data",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              StreamBuilder<List<UserModel>>(
-                  stream: _readData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapshot.data!.isEmpty) {
-                      return Center(child: Text("No Data Yet"));
-                    }
-                    final users = snapshot.data;
-                    return Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                          children: users!.map((user) {
-                        return ListTile(
-                          leading: GestureDetector(
-                            onTap: () {
-                              _deleteData(user.id!);
-                            },
-                            child: Icon(Icons.delete),
-                          ),
-                          trailing: GestureDetector(
-                            onTap: () {
-                              _updateData(UserModel(
-                                id: user.id,
-                                username: "John Wick",
-                                adress: "Pakistan",
-                              ));
-                            },
-                            child: Icon(Icons.update),
-                          ),
-                          title: Text(user.username!),
-                          subtitle: Text(user.adress!),
-                        );
-                      }).toList()),
-                    );
-                  }),
-              GestureDetector(
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushNamed(context, "/login");
-                  showToast(message: "Successfully signed out");
-                },
-                child: Container(
-                  height: 45,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                    child: Text(
-                      "Sign out",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  ),
-                ),
-              )
-            ],
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // Video Player
+          Expanded(
+            child: controller.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: controller.value.aspectRatio,
+                    child: VideoPlayer(controller),
+                  )
+                : Center(child: CircularProgressIndicator()),
           ),
-        ));
-  }
-
-  Stream<List<UserModel>> _readData() {
-    final userCollection = FirebaseFirestore.instance.collection("users");
-
-    return userCollection.snapshots().map((qureySnapshot) => qureySnapshot.docs
-        .map(
-          (e) => UserModel.fromSnapshot(e),
-        )
-        .toList());
-  }
-
-  void _createData(UserModel userModel) {
-    final userCollection = FirebaseFirestore.instance.collection("users");
-
-    String id = userCollection.doc().id;
-
-    final newUser = UserModel(
-      username: userModel.username,
-      age: userModel.age,
-      adress: userModel.adress,
-      id: id,
-    ).toJson();
-
-    userCollection.doc(id).set(newUser);
-  }
-
-  void _updateData(UserModel userModel) {
-    final userCollection = FirebaseFirestore.instance.collection("users");
-
-    final newData = UserModel(
-      username: userModel.username,
-      id: userModel.id,
-      adress: userModel.adress,
-      age: userModel.age,
-    ).toJson();
-
-    userCollection.doc(userModel.id).update(newData);
-  }
-
-  void _deleteData(String id) {
-    final userCollection = FirebaseFirestore.instance.collection("users");
-
-    userCollection.doc(id).delete();
-  }
-}
-
-class UserModel {
-  final String? username;
-  final String? adress;
-  final int? age;
-  final String? id;
-
-  UserModel({this.id, this.username, this.adress, this.age});
-
-  static UserModel fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> snapshot) {
-    return UserModel(
-      username: snapshot['username'],
-      adress: snapshot['adress'],
-      age: snapshot['age'],
-      id: snapshot['id'],
+          // Controls
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
+                      color: isLiked ? Colors.red : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isLiked = !isLiked;
+                        isDisliked = false;
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isDisliked ? Icons.thumb_down : Icons.thumb_down_outlined,
+                      color: isDisliked ? Colors.blue : Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isDisliked = !isDisliked;
+                        isLiked = false;
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.comment, color: Colors.grey),
+                    onPressed: () {
+                      setState(() {
+                        isCommentOpen = true;
+                      });
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) => Container(
+                          height: MediaQuery.of(context).size.height / 2,
+                          color: Colors.white,
+                          child: Center(child: Text('Comments Section')),
+                        ),
+                      ).whenComplete(() {
+                        setState(() {
+                          isCommentOpen = false;
+                        });
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "username": username,
-      "age": age,
-      "id": id,
-      "adress": adress,
-    };
   }
 }

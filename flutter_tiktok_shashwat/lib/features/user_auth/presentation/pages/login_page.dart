@@ -93,43 +93,43 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  _signInWithGoogle();
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          FontAwesomeIcons.google,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "Sign in with Google",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // GestureDetector(
+              //   onTap: () {
+              //     _signInWithGoogle();
+              //   },
+              //   child: Container(
+              //     width: double.infinity,
+              //     height: 45,
+              //     decoration: BoxDecoration(
+              //       color: Colors.red,
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //     child: Center(
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.center,
+              //         children: [
+              //           Icon(
+              //             FontAwesomeIcons.google,
+              //             color: Colors.white,
+              //           ),
+              //           SizedBox(
+              //             width: 5,
+              //           ),
+              //           Text(
+              //             "Sign in with Google",
+              //             style: TextStyle(
+              //               color: Colors.white,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: 20,
               ),
@@ -187,27 +187,27 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _signInWithGoogle() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // _signInWithGoogle() async {
+  //   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-    try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
+  //   try {
+  //     final GoogleSignInAccount? googleSignInAccount =
+  //         await _googleSignIn.signIn();
 
-      if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
+  //     if (googleSignInAccount != null) {
+  //       final GoogleSignInAuthentication googleSignInAuthentication =
+  //           await googleSignInAccount.authentication;
 
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken,
-        );
+  //       final AuthCredential credential = GoogleAuthProvider.credential(
+  //         idToken: googleSignInAuthentication.idToken,
+  //         accessToken: googleSignInAuthentication.accessToken,
+  //       );
 
-        await _firebaseAuth.signInWithCredential(credential);
-        Navigator.pushNamed(context, "/home");
-      }
-    } catch (e) {
-      showToast(message: "some error occured $e");
-    }
-  }
+  //       await _firebaseAuth.signInWithCredential(credential);
+  //       Navigator.pushNamed(context, "/home");
+  //     }
+  //   } catch (e) {
+  //     showToast(message: "some error occured $e");
+  //   }
+  // }
 }
