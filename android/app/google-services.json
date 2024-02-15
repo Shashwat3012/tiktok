@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "431674141651",
+    "project_id": "tiktok-2095a",
+    "storage_bucket": "tiktok-2095a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431674141651:android:48cda0ef362ac0b9381d26",
+        "android_client_info": {
+          "package_name": "com.example.tiktok_shashwat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmcP_51NDXpp0ZKCaJCDYvi-fsaBKFVvM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
