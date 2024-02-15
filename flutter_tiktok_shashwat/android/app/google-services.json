@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "581041793774",
+    "project_id": "shashwat-flutter",
+    "storage_bucket": "shashwat-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581041793774:android:1f764f270c0c12e5ff21ff",
+        "android_client_info": {
+          "package_name": "com.example.flutter_tiktok_shashwat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApIXoEAlWJ1J3saVcmeNL4qSxuB3JaStA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581041793774:android:c32fb83fb7bb3682ff21ff",
+        "android_client_info": {
+          "package_name": "com.shashwat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApIXoEAlWJ1J3saVcmeNL4qSxuB3JaStA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
